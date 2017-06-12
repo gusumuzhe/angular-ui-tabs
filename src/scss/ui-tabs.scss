@@ -1,0 +1,103 @@
+.ui-tabs {
+  ul.ui-tabs-nav {
+    display: flex;
+    padding: 0 10px;
+    list-style: none;
+    border-bottom: 1px solid #999;
+
+    li {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+      margin: 0 -1px -1px -0;
+      max-width: 200px;
+      padding: 3px 5px;
+      border: 1px solid #999;
+      background: #efefef;
+      cursor: default;
+      font-size: 0.8em;
+      box-sizing: border-box;
+
+      span {
+        margin: 0 6px;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 20px;
+        width: 20px;
+        overflow: hidden;
+        user-select: none;
+      }
+
+      &.active {
+        background: #fcfcfc;
+        border-bottom: 1px solid transparent;
+        transition: none;
+      }
+
+      &:hover {
+        background: #fcfcfc;
+        transition: background 0.4s;
+      }
+    }
+  }
+}
+
+//关闭按钮
+.ui-tabs-close-icon {
+  position: relative;
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  vertical-align: middle;
+
+  &:before, &:after {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 2px;
+    width: 11px;
+    height: 1px;
+    border-radius: 1px;
+    background: #777;
+  }
+
+  &:before {
+    transform: rotate(45deg);
+  }
+
+  &:after {
+    transform: rotate(-45deg);
+  }
+
+  &:hover {
+    background: red;
+  }
+
+  &:hover:after, &:hover:before {
+    background: #fff;
+  }
+}
+
+//正在加载图标
+.ui-tabs-loading-icon {
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+  border: 3px solid #5677fc;
+  border-right: 3px solid transparent;
+  border-radius: 50%;
+  box-sizing: border-box;
+  vertical-align: middle;
+  animation: rotate-animate 1.5s infinite;
+
+  @keyframes rotate-animate {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

@@ -1,0 +1,12 @@
+<div class="ui-tabs" ng-show="tabs.length > 0">
+  <ul class="ui-tabs-nav" sv-root sv-part="tabs">
+    <li ng-repeat="tab in tabs track by tab.id" ng-class="{active: tab === current}" sv-element="opts" ng-click="activeTab(tab)" ng-mousedown="mouseDown($event)" ui-tabs-menu="menuSelect(tab, action)">
+      <i class="ui-tabs-loading-icon" ng-show="tab.loading"></i>
+      <span>{{tab.name}}</span>
+      <i class="ui-tabs-close-icon" ng-click="close($event, tab)"></i>
+    </li>
+  </ul>
+  <div class="ui-tabs-container">
+    <div class="ui-tabs-page" id="ui-tabs-{{tab.id}}" ng-show="tab === current" ng-repeat="tab in tabs track by tab.id"></div>
+  </div>
+</div>
