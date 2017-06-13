@@ -18,7 +18,7 @@
 该服务用于打开，关闭，刷新，激活tab页
 
 ### open(options)
-用于打开一个tab页，所打开的controller中，可以注入`uiTabsParams``uiTab`两个参数，`uiTabsParams`表示打开时，传入的参数，`uiTab`表示目前打开的tab页
+用于打开一个tab页，所打开的controller中，可以注入`uiTabsParams` `uiTab`两个参数，`uiTabsParams`表示打开时，传入的参数，`uiTab`表示目前打开的tab页
 
 ##### Parameters
 1. options `object` &nbsp;&nbsp;&nbsp;tab的配置
@@ -104,7 +104,7 @@ app.controller('MyController', function($scope, uiTabs){
 ```
 
 ### closeAll()
-用于关闭所有tab页，并且每一个的tab页的关闭，都会触发`tabCloseStart``tabCloseSuccess `或者`tabCloseError`事件，且无法阻止tab页的关闭
+用于关闭所有tab页，并且每一个的tab页的关闭，都会触发`tabCloseStart` `tabCloseSuccess `或者`tabCloseError`事件，且无法阻止tab页的关闭
 
 #### examples
 ```javascript

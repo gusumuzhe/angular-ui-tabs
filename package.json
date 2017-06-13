@@ -1,16 +1,14 @@
 {
   "name": "ui-tabs",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server"
+  "description": "angularjs ui tabs like browser tab",
+  "main": "dist/ui-tabs.js",
+  "directories": {
+    "example": "examples"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "angular": "^1.6.4"
+    "angular": "^1.6.4",
+    "angular-route": "^1.6.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.1",
@@ -18,20 +16,35 @@
     "babel-loader": "^7.0.0",
     "babel-preset-env": "^1.5.1",
     "browser-sync": "^2.18.12",
+    "css-loader": "^0.28.4",
     "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
-    "gulp-postcss": "^7.0.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^3.1.0",
-    "gulp-shell": "^0.6.3",
     "gulp-uglify": "^3.0.0",
-    "http-proxy-middleware": "^0.17.4",
+    "html-loader": "^0.4.5",
     "node-sass": "^4.5.3",
     "path": "^0.12.7",
+    "postcss-loader": "^2.0.5",
     "sass-loader": "^6.0.5",
-    "scss-loader": "0.0.1",
+    "style-loader": "^0.18.2",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5",
     "webpack-stream": "^3.2.0"
-  }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gusumuzhe/angular-ui-pagination.git"
+  },
+  "keywords": [
+    "angularjs",
+    "pagination"
+  ],
+  "author": "gusumuzhe",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gusumuzhe/angular-ui-tabs/issues"
+  },
+  "homepage": "https://github.com/gusumuzhe/angular-ui-tabs#readme"
 }
