@@ -1515,6 +1515,7 @@ _uiTabs2.default.directive('uiTabsView', function ($timeout, $controller, $compi
         link: function link(scope, element) {
 
             scope.tabs = uiTabs.tabs;
+            scope.current = uiTabs.current;
 
             scope.$on('tabOpenStarting', tabOpenStarting);
             scope.$on('tabOpenSuccess', tabOpenSuccess);

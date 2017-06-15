@@ -4,6 +4,7 @@ var rename = require('gulp-rename');
 var browserSync = require('browser-sync').create();
 var webpackConfig = require('./webpack.config');
 var webpack = require('webpack-stream');
+var ngAnnotate = require('gulp-ng-annotate');
 
 var server = {
     baseDir: ['examples', './']
@@ -33,7 +34,8 @@ gulp.task('watch', function () {
 
 gulp.task('pack', ['webpack'], function () {
     return gulp.src('dist/ui-tabs.js')
-        .pipe(uglify())
+        .pipe(ngAnnotate())
+        // .pipe(uglify())
         .pipe(rename({extname: '.min.js'}))
         .pipe(gulp.dest('dist'));
 });

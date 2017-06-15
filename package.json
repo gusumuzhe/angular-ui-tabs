@@ -18,6 +18,7 @@
     "browser-sync": "^2.18.12",
     "css-loader": "^0.28.4",
     "gulp": "^3.9.1",
+    "gulp-ng-annotate": "^2.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^3.0.0",
     "html-loader": "^0.4.5",

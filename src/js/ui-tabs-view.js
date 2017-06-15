@@ -16,6 +16,7 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
         link: function (scope, element) {
 
             scope.tabs = uiTabs.tabs;
+            scope.current = uiTabs.current;
 
             scope.$on('tabOpenStarting', tabOpenStarting);
             scope.$on('tabOpenSuccess', tabOpenSuccess);
