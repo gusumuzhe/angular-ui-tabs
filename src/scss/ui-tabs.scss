@@ -1,6 +1,12 @@
 .ui-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+
   ul.ui-tabs-nav {
+    flex-shrink: 0;
     display: flex;
+    margin: 10px 0 0;
     padding: 0 10px;
     list-style: none;
     border-bottom: 1px solid #999;
@@ -39,6 +45,11 @@
         transition: background 0.4s;
       }
     }
+  }
+
+  .ui-tabs-container {
+    position: relative; // 解决滚动条在内容下方的问题
+    overflow: scroll;
   }
 }
 

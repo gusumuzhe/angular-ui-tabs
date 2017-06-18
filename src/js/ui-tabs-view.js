@@ -12,6 +12,7 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
         restrict: 'EAC',
         priority: 400,
         scope: true,
+        replace: true,
         template: uiTabsHtml,
         link: function (scope, element) {
 
