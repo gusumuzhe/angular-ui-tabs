@@ -126,7 +126,7 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
                     // 实例controller，并且传入uiTabsParams 和 uiTab 参数
                     $controller(tab.controller, {
                         $scope: newScope,
-                        uiTabsParams: tab.params,
+                        uiTabsParams: tab.params || {},
                         uiTab: tab
                     });
                 }
