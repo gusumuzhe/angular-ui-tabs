@@ -213,7 +213,7 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
 
                 tab.template = getTemplateFor(tab);
                 tab.close = function () {
-                    closeTab(tab);
+                    return closeTab(tab);
                 };
                 tab.refresh = function () {
                     refreshTab(tab);

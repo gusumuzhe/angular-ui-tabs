@@ -286,7 +286,7 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view']).provider
 
             tab.template = getTemplateFor(tab);
             tab.close = function () {
-                closeTab(tab);
+                return closeTab(tab);
             };
             tab.refresh = function () {
                 refreshTab(tab);
@@ -881,7 +881,7 @@ _uiTabs2.default.directive('uiTabsMenu', function () {
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"ui-tabs\" ng-show=\"tabs.length > 0\">\n  <ul class=\"ui-tabs-nav\" sv-root sv-part=\"tabs\">\n    <li ng-repeat=\"tab in tabs track by tab.id\" ng-class=\"{active: tab === current}\" sv-element=\"opts\" ng-click=\"activeTab(tab)\" ng-mousedown=\"mouseDown($event)\" ui-tabs-menu=\"menuSelect(tab, action)\">\n      <i class=\"ui-tabs-loading-icon\" ng-show=\"tab.loading\"></i>\n      <span>{{tab.name}}</span>\n      <i class=\"ui-tabs-close-icon\" ng-click=\"close($event, tab)\"></i>\n    </li>\n  </ul>\n  <div class=\"ui-tabs-container\">\n    <div class=\"ui-tabs-page\" id=\"ui-tabs-{{tab.id}}\" ng-show=\"tab === current\" ng-repeat=\"tab in tabs track by tab.id\"></div>\n  </div>\n</div>";
+module.exports = "<div class=\"ui-tabs\" ng-show=\"tabs.length > 0\">\n  <ul class=\"ui-tabs-nav\" sv-root sv-part=\"tabs\">\n    <li ng-repeat=\"tab in tabs track by tab.id\" ng-class=\"{active: tab === current}\" sv-element=\"opts\" ng-mousedown=\"activeTab(tab)\" ng-mousedown=\"mouseDown($event)\" ui-tabs-menu=\"menuSelect(tab, action)\">\n      <i class=\"ui-tabs-loading-icon\" ng-show=\"tab.loading\"></i>\n      <span>{{tab.name}}</span>\n      <i class=\"ui-tabs-close-icon\" ng-mousedown=\"close($event, tab)\"></i>\n    </li>\n  </ul>\n  <div class=\"ui-tabs-container\">\n    <div class=\"ui-tabs-page\" id=\"ui-tabs-{{tab.id}}\" ng-show=\"tab === current\" ng-repeat=\"tab in tabs track by tab.id\"></div>\n  </div>\n</div>";
 
 /***/ }),
 /* 5 */
@@ -1590,10 +1590,8 @@ _uiTabs2.default.directive('uiTabsView', function ($timeout, $controller, $compi
                     closeTab;
 
                 while ((closeTab = uiTabs.tabs[closeIndex]) !== tab) {
-                    if (!closeTab.close()) {
-                        // 关闭失败时，则关闭下一个
-                        closeIndex--;
-                    }
+                    closeTab.close();
+                    closeIndex--;
                 }
             }
 
@@ -1616,6 +1614,8 @@ _uiTabs2.default.directive('uiTabsView', function ($timeout, $controller, $compi
              */
             function tabOpenSuccess(e, tab) {
 
+                tab.loading = false; // 取消加载动画
+
                 var newScope = tab.$scope = element.parent().scope().$new(),
                     link = $compile(tab.template),
                     pageNode = tab.$node = link(newScope),
@@ -1633,8 +1633,6 @@ _uiTabs2.default.directive('uiTabsView', function ($timeout, $controller, $compi
                 $timeout(function () {
                     container = angular.element(element[0].querySelector('#ui-tabs-' + tab.id));
                     container.append(pageNode);
-
-                    tab.loading = false; // 取消加载动画
                 });
             }
 
@@ -1709,7 +1707,7 @@ exports = module.exports = __webpack_require__(1)(undefined);
 
 
 // module
-exports.push([module.i, ".ui-tabs {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column; }\n  .ui-tabs ul.ui-tabs-nav {\n    -ms-flex-negative: 0;\n        flex-shrink: 0;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    margin: 10px 0 0;\n    padding: 0 10px;\n    list-style: none;\n    border-bottom: 1px solid #999; }\n    .ui-tabs ul.ui-tabs-nav li {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n      -webkit-box-flex: 1;\n          -ms-flex-positive: 1;\n              flex-grow: 1;\n      margin: 0 -1px -1px -0;\n      max-width: 200px;\n      padding: 3px 5px;\n      border: 1px solid #999;\n      background: #efefef;\n      cursor: default;\n      font-size: 0.8em;\n      -webkit-box-sizing: border-box;\n              box-sizing: border-box; }\n      .ui-tabs ul.ui-tabs-nav li span {\n        margin: 0 6px;\n        -webkit-box-flex: 1;\n            -ms-flex-positive: 1;\n                flex-grow: 1;\n        -ms-flex-negative: 1;\n            flex-shrink: 1;\n        -ms-flex-preferred-size: 20px;\n            flex-basis: 20px;\n        width: 20px;\n        overflow: hidden;\n        -webkit-user-select: none;\n           -moz-user-select: none;\n            -ms-user-select: none;\n                user-select: none; }\n      .ui-tabs ul.ui-tabs-nav li.active {\n        background: #fcfcfc;\n        border-bottom: 1px solid transparent;\n        -webkit-transition: none;\n        transition: none; }\n      .ui-tabs ul.ui-tabs-nav li:hover {\n        background: #fcfcfc;\n        -webkit-transition: background 0.4s;\n        transition: background 0.4s; }\n  .ui-tabs .ui-tabs-container {\n    position: relative;\n    overflow: scroll; }\n\n.ui-tabs-close-icon {\n  position: relative;\n  display: inline-block;\n  height: 15px;\n  width: 15px;\n  border-radius: 50%;\n  vertical-align: middle; }\n  .ui-tabs-close-icon:before, .ui-tabs-close-icon:after {\n    content: \"\";\n    position: absolute;\n    top: 7px;\n    left: 2px;\n    width: 11px;\n    height: 1px;\n    border-radius: 1px;\n    background: #777; }\n  .ui-tabs-close-icon:before {\n    -webkit-transform: rotate(45deg);\n            transform: rotate(45deg); }\n  .ui-tabs-close-icon:after {\n    -webkit-transform: rotate(-45deg);\n            transform: rotate(-45deg); }\n  .ui-tabs-close-icon:hover {\n    background: red; }\n  .ui-tabs-close-icon:hover:after, .ui-tabs-close-icon:hover:before {\n    background: #fff; }\n\n.ui-tabs-loading-icon {\n  display: inline-block;\n  height: 15px;\n  width: 15px;\n  border: 3px solid #5677fc;\n  border-right: 3px solid transparent;\n  border-radius: 50%;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  vertical-align: middle;\n  -webkit-animation: rotate-animate 1.5s infinite;\n          animation: rotate-animate 1.5s infinite; }\n\n@-webkit-keyframes rotate-animate {\n  from {\n    -webkit-transform: rotate(0deg);\n            transform: rotate(0deg); }\n  to {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg); } }\n\n@keyframes rotate-animate {\n  from {\n    -webkit-transform: rotate(0deg);\n            transform: rotate(0deg); }\n  to {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg); } }\n", ""]);
+exports.push([module.i, ".ui-tabs {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column; }\n  .ui-tabs ul.ui-tabs-nav {\n    -ms-flex-negative: 0;\n        flex-shrink: 0;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    margin: 10px 0 0;\n    padding: 0 10px;\n    list-style: none;\n    border-bottom: 1px solid #999; }\n    .ui-tabs ul.ui-tabs-nav li {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n      -webkit-box-flex: 1;\n          -ms-flex-positive: 1;\n              flex-grow: 1;\n      margin: 0 -1px -1px -0;\n      max-width: 200px;\n      padding: 3px 5px;\n      border: 1px solid #999;\n      background: #efefef;\n      cursor: default;\n      font-size: 0.8em;\n      -webkit-box-sizing: border-box;\n              box-sizing: border-box; }\n      .ui-tabs ul.ui-tabs-nav li span {\n        margin: 0 6px;\n        -webkit-box-flex: 1;\n            -ms-flex-positive: 1;\n                flex-grow: 1;\n        -ms-flex-negative: 1;\n            flex-shrink: 1;\n        -ms-flex-preferred-size: 20px;\n            flex-basis: 20px;\n        width: 20px;\n        overflow: hidden;\n        -webkit-user-select: none;\n           -moz-user-select: none;\n            -ms-user-select: none;\n                user-select: none;\n        white-space: nowrap; }\n      .ui-tabs ul.ui-tabs-nav li.active {\n        background: #fcfcfc;\n        border-bottom: 1px solid transparent;\n        -webkit-transition: none;\n        transition: none; }\n      .ui-tabs ul.ui-tabs-nav li:hover {\n        background: #fcfcfc;\n        -webkit-transition: background 0.4s;\n        transition: background 0.4s; }\n  .ui-tabs .ui-tabs-container {\n    position: relative;\n    -webkit-box-flex: 1;\n        -ms-flex-positive: 1;\n            flex-grow: 1;\n    overflow: auto; }\n\n.ui-tabs-close-icon {\n  position: relative;\n  display: inline-block;\n  height: 15px;\n  width: 15px;\n  border-radius: 50%;\n  vertical-align: middle; }\n  .ui-tabs-close-icon:before, .ui-tabs-close-icon:after {\n    content: \"\";\n    position: absolute;\n    top: 7px;\n    left: 2px;\n    width: 11px;\n    height: 1px;\n    border-radius: 1px;\n    background: #777; }\n  .ui-tabs-close-icon:before {\n    -webkit-transform: rotate(45deg);\n            transform: rotate(45deg); }\n  .ui-tabs-close-icon:after {\n    -webkit-transform: rotate(-45deg);\n            transform: rotate(-45deg); }\n  .ui-tabs-close-icon:hover {\n    background: red; }\n  .ui-tabs-close-icon:hover:after, .ui-tabs-close-icon:hover:before {\n    background: #fff; }\n\n.ui-tabs-loading-icon {\n  display: inline-block;\n  height: 15px;\n  width: 15px;\n  border: 3px solid #5677fc;\n  border-right: 3px solid transparent;\n  border-radius: 50%;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  vertical-align: middle;\n  -webkit-animation: rotate-animate 1.5s infinite;\n          animation: rotate-animate 1.5s infinite; }\n\n@-webkit-keyframes rotate-animate {\n  from {\n    -webkit-transform: rotate(0deg);\n            transform: rotate(0deg); }\n  to {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg); } }\n\n@keyframes rotate-animate {\n  from {\n    -webkit-transform: rotate(0deg);\n            transform: rotate(0deg); }\n  to {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg); } }\n", ""]);
 
 // exports
 

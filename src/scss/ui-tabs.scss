@@ -31,6 +31,7 @@
         width: 20px;
         overflow: hidden;
         user-select: none;
+        white-space: nowrap;
       }
 
       &.active {
@@ -48,7 +49,8 @@
 
   .ui-tabs-container {
     position: relative; // 解决滚动条在内容下方的问题
-    overflow: scroll;
+    flex-grow: 1;
+    overflow: auto;
   }
 }
 

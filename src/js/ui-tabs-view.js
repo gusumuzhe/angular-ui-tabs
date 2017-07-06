@@ -91,10 +91,8 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
                     closeTab;
 
                 while ((closeTab = uiTabs.tabs[closeIndex]) !== tab) {
-                    if (!closeTab.close()) {
-                        // 关闭失败时，则关闭下一个
-                        closeIndex--;
-                    }
+                    closeTab.close();
+                    closeIndex--;
                 }
             }
 
@@ -117,6 +115,8 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
              */
             function tabOpenSuccess(e, tab) {
 
+                tab.loading = false; // 取消加载动画
+
                 var newScope = tab.$scope = element.parent().scope().$new(),
                     link = $compile(tab.template),
                     pageNode = tab.$node = link(newScope),
@@ -134,8 +134,6 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
                 $timeout(function () {
                     container = angular.element(element[0].querySelector('#ui-tabs-' + tab.id));
                     container.append(pageNode);
-
-                    tab.loading = false; // 取消加载动画
                 });
             }
 
