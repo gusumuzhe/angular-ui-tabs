@@ -51,6 +51,10 @@
     position: relative; // 解决滚动条在内容下方的问题
     flex-grow: 1;
     overflow: auto;
+
+    > div {
+      overflow: hidden;
+    }
   }
 }
 
