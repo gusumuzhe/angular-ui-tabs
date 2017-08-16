@@ -112,28 +112,33 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
              *
              * @param e
              * @param tab
+             * @param preTab
              */
-            function tabOpenSuccess(e, tab) {
+            function tabOpenSuccess(e, tab, preTab) {
+                var newScope, link, pageNode, container;
 
                 tab.loading = false; // 取消加载动画
 
-                var newScope = tab.$scope = element.parent().scope().$new(),
-                    link = $compile(tab.template),
-                    pageNode = tab.$node = link(newScope),
-                    container;
+                newScope = tab.$scope = element.parent().scope().$new();
+                newScope.$tab = tab;
+
+                link = $compile(tab.locals['$template']);
+                pageNode = tab.$node = link(newScope);
 
                 if (tab.controller) {
                     // 实例controller，并且传入uiTabsParams 和 uiTab 参数
-                    $controller(tab.controller, {
+                    $controller(tab.controller, angular.extend({
                         $scope: newScope,
                         uiTabsParams: tab.params || {},
                         uiTab: tab
-                    });
+                    }, tab.locals));
                 }
 
                 $timeout(function () {
                     container = angular.element(element[0].querySelector('#ui-tabs-' + tab.id));
                     container.append(pageNode);
+
+                    broadcastTabActivated(tab, preTab);
                 });
             }
 
@@ -150,8 +155,23 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
             /**
              * 当tab切换成功，则变更当前的tab页
              */
-            function tabChangeSuccess() {
+            function tabChangeSuccess(e, tab, preTab) {
                 scope.current = uiTabs.current;
+
+                broadcastTabActivated(tab, preTab);
+            }
+
+            /**
+             * 只对该tab页广播 tabActivated 事件
+             * @param tab 被打开的tab
+             * @param preTab 前一个tab
+             */
+            function broadcastTabActivated(tab, preTab) {
+                tab.$scope.$broadcast('tabActivated', preTab)
+                //
+                // $timeout(function () {
+                //
+                // });
             }
 
             /**
