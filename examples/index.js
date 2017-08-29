@@ -35,14 +35,16 @@ var app = angular.module('app', ['ui.tabs', 'oc.lazyLoad'])
             })
             .tab('tab2', {
                 title: 'tab2',
-                controller: 'DemoController2',
+                controller: 'DemoController4',
                 templateUrl: 'demo.html'
             })
             .tab('tab3', {
                 title: 'tab3',
-                controller: 'DemoController3',
+                controller: 'DemoController4',
                 templateUrl: 'demo.html'
-            })
+            });
+
+        // uiTabsProvider.otherwise('tab2');
     })
     .controller('MyController', function ($scope, uiTabs) {
         var index = 0;

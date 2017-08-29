@@ -27,6 +27,11 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
             scope.$on('tabRefresh', tabRefresh);
             scope.$on('$destroy', uiTabs.closeAll); // 指令销毁时，清楚所有tab
 
+            // 如果不存在打开的tab，则打开默认的tab
+            if (!scope.current) {
+                uiTabs.open(null);
+            }
+
             // 关闭tab
             scope.close = function (e, tab) {
                 tab.close();
@@ -158,7 +163,18 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
             function tabChangeSuccess(e, tab, preTab) {
                 scope.current = uiTabs.current;
 
-                broadcastTabActivated(tab, preTab);
+                if (tab.reloadOnActive) {
+                    if (tab.$scope) {
+                        tab.$scope.$destroy();
+                    }
+                    if (tab.$node) {
+                        tab.$node.remove();
+                    }
+
+                    tabOpenSuccess(e, tab, preTab);
+                } else {
+                    broadcastTabActivated(tab, preTab);
+                }
             }
 
             /**

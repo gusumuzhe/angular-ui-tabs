@@ -50,7 +50,7 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
          * @param {string} name tab名称，由this.tab 配置
          */
         this.otherwise = function (name) {
-            tabOptions[null] = name;
+            tabOptions[null] = tabOptions[name];
         };
 
         this.$get = function ($rootScope, $q, $templateRequest, $injector) {
@@ -119,6 +119,14 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
                         var lastTab = this.current,
                             tabOption = tabOptions[name],
                             tab;
+
+                        // 没有默认配置项
+                        if (name === null && !tabOptions[name]) {
+                            return $q.reject({
+                                error: '3',
+                                message: 'no otherwise'
+                            });
+                        }
 
                         if (!tabOption) {
                             throw tabMinErr('notab', 'the tab ' + name + ' is not exist');
