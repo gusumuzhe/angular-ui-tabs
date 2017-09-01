@@ -35,16 +35,17 @@ var app = angular.module('app', ['ui.tabs', 'oc.lazyLoad'])
             })
             .tab('tab2', {
                 title: 'tab2',
-                controller: 'DemoController4',
+                controller: 'DemoController1',
                 templateUrl: 'demo.html'
             })
             .tab('tab3', {
                 title: 'tab3',
-                controller: 'DemoController4',
+                controller: 'DemoController1',
                 templateUrl: 'demo.html'
             });
 
         // uiTabsProvider.otherwise('tab2');
+        // uiTabsProvider.setOptions({reopen: false});
     })
     .controller('MyController', function ($scope, uiTabs) {
         var index = 0;
@@ -70,7 +71,7 @@ var app = angular.module('app', ['ui.tabs', 'oc.lazyLoad'])
             //         name: 'test'
             //     }
             // });
-            uiTabs.open('tab' + ++index, {a: 1});
+            uiTabs.open('tab1', {title: 'tab' + (++index)});
         };
 
         $scope.closeTab = function (tab) {
@@ -87,7 +88,7 @@ var app = angular.module('app', ['ui.tabs', 'oc.lazyLoad'])
 
     })
     .controller('DemoController4', function ($scope, uiTab, uiTabsParams) {
-        $scope.tabs = [1];
+        $scope.tabs = uiTabsParams;
 
         // $scope.$on('tabCloseStart', function(e){
         //     e.preventDefault();

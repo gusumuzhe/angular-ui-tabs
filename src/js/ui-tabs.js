@@ -16,6 +16,13 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
         var tabs = []; // 所有打开的tab集合
         var tabOptions = {}; // 所有tab的配置项
 
+        var defaultOptions = { // 默认配置
+            reloadOnActive: false,
+            reopen: true
+        };
+
+        var maxTabs = 5; // 允许打开的最大数量的tab
+
         /**
          * 配置tab项
          *
@@ -27,7 +34,8 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
          *  @property {string} templateUrl      模板地址
          *  @property          params           传递的参数，在打开的tab页中，会通过uiTabsParams 传入，如果open时，同时传入参数，可能被覆盖
          *  @property {object} resolve          传递的参数，通过注入的方式传入
-         *  @property {boolean} reloadOnActive  在tab被重新激活时，是否重新加载
+         *  @property {boolean} reloadOnActive  在tab被重新激活时，是否重新加载 默认 false
+         *  @property {boolean} reopen          是否允许重复打开相同的tab
          * @return {*}
          */
         this.tab = function (name, option) {
@@ -53,60 +61,34 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
             tabOptions[null] = tabOptions[name];
         };
 
+        /**
+         * 设置默认配置
+         *
+         * @param {Object} options 配置
+         *  @property {boolean} reloadOnActive
+         *  @property {boolean} reopen
+         */
+        this.setOptions = function (options) {
+            if (isObject(options)) {
+                extend(defaultOptions, options);
+            } else {
+                throw tabMinErr('typeerror', 'options must object');
+            }
+        };
+
+        /**
+         * 设置最大数量的打开的tab
+         *
+         * @param max
+         */
+        this.setMaxTabs = function (max) {
+            maxTabs = max
+        };
+
         this.$get = function ($rootScope, $q, $templateRequest, $injector) {
             var currentId = 1,
                 uiTabs = {
                     tabs: tabs,
-
-                    // /**
-                    //  * 打开一个tab页
-                    //  *
-                    //  * @param {object} option
-                    //  *  @property {string} name         新的tab页名称
-                    //  *  @property {string} controller   controller名称
-                    //  *  @property {string} template     模板
-                    //  *  @property {string} templateUrl  模板地址
-                    //  *  @property          params       传递的参数
-                    //  */
-                    // open: function (option) {
-                    //     var lastTab = this.current,
-                    //         tab = parseOption(option);
-                    //
-                    //     if (!$rootScope.$broadcast('tabOpenStart', tab, lastTab).defaultPrevented) {
-                    //         tabs.push(tab);
-                    //         uiTabs.current = tab;
-                    //
-                    //         $rootScope.$broadcast('tabOpenStarting', tab, lastTab);
-                    //
-                    //         return $q.resolve(tab.template).then(function (tpl) {
-                    //             tab.template = tpl;
-                    //
-                    //             $rootScope.$broadcast('tabOpenSuccess', tab, lastTab);
-                    //
-                    //             return tpl;
-                    //         }).catch(function () {
-                    //             $rootScope.$broadcast('tabOpenError', tab, lastTab, {
-                    //                 error: '2',
-                    //                 message: 'template resolve error'
-                    //             });
-                    //
-                    //             return {
-                    //                 error: '2',
-                    //                 message: 'template resolve error'
-                    //             }
-                    //         });
-                    //     } else {
-                    //         $rootScope.$broadcast('tabOpenError', tab, lastTab, {
-                    //             error: '1',
-                    //             message: 'prevented'
-                    //         });
-                    //
-                    //         return $q.reject({
-                    //             error: '1',
-                    //             message: 'prevented'
-                    //         });
-                    //     }
-                    // },
 
                     /**
                      * 打开tab页
@@ -117,22 +99,28 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
                      */
                     open: function (name, params) {
                         var lastTab = this.current,
-                            tabOption = tabOptions[name],
-                            tab;
+                            tab = parseTab(name, params),
+                            openedTab;
 
-                        // 没有默认配置项
-                        if (name === null && !tabOptions[name]) {
+                        if (!tab) {
                             return $q.reject({
                                 error: '3',
-                                message: 'no otherwise'
+                                message: 'default tab is not exists'
                             });
                         }
 
-                        if (!tabOption) {
-                            throw tabMinErr('notab', 'the tab ' + name + ' is not exist');
+                        // 不允许重复打开时，则跳转到该tab
+                        if (!tab.reopen && (openedTab = getTabByName(name))) {
+                            return $q.resolve(activeTab(openedTab));
                         }
 
-                        tab = parseOption(tabOption, params);
+                        // 不允许打开过多tab
+                        if (tabs.length >= maxTabs) {
+                            return $q.reject({
+                                error: '5',
+                                message: 'tab numbers limit'
+                            });
+                        }
 
                         if (!$rootScope.$broadcast('tabOpenStart', tab, lastTab).defaultPrevented) {
                             tabs.push(tab);
@@ -214,6 +202,20 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
 
             return uiTabs;
 
+
+            /**
+             * 获取相同name的tab
+             *
+             * @param name
+             * @return {*}
+             */
+            function getTabByName(name) {
+                for (var i = 0; i < tabs.length; i++) {
+                    if (tabs[i].name === name) {
+                        return tabs[i];
+                    }
+                }
+            }
 
             /**
              * 刷新tab
@@ -302,14 +304,27 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
             /**
              * 解析配置，返回tab
              *
-             * @param option
+             * @param name
              * @param params
-             * @return {Object}
+             * @return {Object|undefined}
              */
-            function parseOption(option, params) {
-                var tab = extend({
-                    id: generatorTabId()
-                }, option);
+            function parseTab(name, params) {
+                var option = tabOptions[name],
+                    tab;
+
+                // 没有默认配置项
+                if (name === null && !option) {
+                    return;
+                }
+
+                if (!option) {
+                    throw tabMinErr('notab', 'the tab ' + name + ' is not exist');
+                }
+
+                tab = extend({
+                    id: generatorTabId(),
+                    name: name
+                }, defaultOptions, option);
 
                 tab.locals = resolveLocals(tab);
 
@@ -317,7 +332,7 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
                     if (!isObject(tab.params) || !isObject(params)) {
                         tab.params = params;
                     } else {
-                        angular.extend(tab.params, params);
+                        tab.params = angular.extend({}, tab.params, params);
                     }
                 }
 
