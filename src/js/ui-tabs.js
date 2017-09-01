@@ -21,7 +21,7 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
             reopen: true
         };
 
-        var maxTabs = 5; // 允许打开的最大数量的tab
+        var maxTabs = 20; // 允许打开的最大数量的tab
 
         /**
          * 配置tab项
