@@ -96,7 +96,7 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view']).provider
         reopen: true
     };
 
-    var maxTabs = 5; // 允许打开的最大数量的tab
+    var maxTabs = 20; // 允许打开的最大数量的tab
 
     /**
      * 配置tab项
@@ -133,7 +133,7 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view']).provider
      * @param {string} name tab名称，由this.tab 配置
      */
     this.otherwise = function (name) {
-        tabOptions[null] = tabOptions[name];
+        tabOptions[null] = name;
     };
 
     /**
@@ -174,8 +174,17 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view']).provider
              */
             open: function open(name, params) {
                 var lastTab = this.current,
-                    tab = parseTab(name, params),
+                    tab,
                     openedTab;
+
+                if (name === null && !(name = tabOptions[name])) {
+                    return $q.reject({
+                        error: '5',
+                        message: 'no default tab'
+                    });
+                }
+
+                tab = parseTab(name, params);
 
                 if (!tab) {
                     return $q.reject({
@@ -384,11 +393,6 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view']).provider
         function parseTab(name, params) {
             var option = tabOptions[name],
                 tab;
-
-            // 没有默认配置项
-            if (name === null && !option) {
-                return;
-            }
 
             if (!option) {
                 throw tabMinErr('notab', 'the tab ' + name + ' is not exist');

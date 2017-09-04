@@ -28,27 +28,42 @@ var app = angular.module('app', ['ui.tabs', 'oc.lazyLoad'])
                     deps: ['$ocLazyLoad',
                         function ($ocLazyLoad) {
                             return $ocLazyLoad.load([
-                                'controller.js']);
+                                'controller1.js']);
                         }]
                 },
-                params: {b:2}
+                params: {tab:1}
             })
             .tab('tab2', {
                 title: 'tab2',
-                controller: 'DemoController1',
-                templateUrl: 'demo.html'
+                controller: 'DemoController2',
+                templateUrl: 'demo.html',
+                resolve: {
+                    deps: ['$ocLazyLoad',
+                        function ($ocLazyLoad) {
+                            return $ocLazyLoad.load([
+                                'controller2.js']);
+                        }]
+                },
+                params: {tab:2}
             })
             .tab('tab3', {
                 title: 'tab3',
-                controller: 'DemoController1',
-                templateUrl: 'demo.html'
+                controller: 'DemoController3',
+                templateUrl: 'demo.html',
+                resolve: {
+                    deps: ['$ocLazyLoad',
+                        function ($ocLazyLoad) {
+                            return $ocLazyLoad.load([
+                                'controller3.js']);
+                        }]
+                },
+                params: {tab:3}
             });
 
-        // uiTabsProvider.otherwise('tab2');
-        // uiTabsProvider.setOptions({reopen: false});
+        uiTabsProvider.otherwise('tab2');
+        uiTabsProvider.setOptions({reopen: false});
     })
     .controller('MyController', function ($scope, uiTabs) {
-        var index = 0;
 
         $scope.$on('tabChangeStart', function (e, tab) {
             console.log(tab);
@@ -62,16 +77,8 @@ var app = angular.module('app', ['ui.tabs', 'oc.lazyLoad'])
 
         $scope.tabs = uiTabs.tabs;
 
-        $scope.addTab = function () {
-            // uiTabs.open({
-            //     name: 'index' + (++index),
-            //     templateUrl: 'demo.html',
-            //     controller: 'DemoController' + index,
-            //     params: {
-            //         name: 'test'
-            //     }
-            // });
-            uiTabs.open('tab1', {title: 'tab' + (++index)});
+        $scope.addTab = function (index) {
+            uiTabs.open('tab' + index, {title: 'tab' + index});
         };
 
         $scope.closeTab = function (tab) {
@@ -86,21 +93,4 @@ var app = angular.module('app', ['ui.tabs', 'oc.lazyLoad'])
             uiTabs.closeAll();
         }
 
-    })
-    .controller('DemoController4', function ($scope, uiTab, uiTabsParams) {
-        $scope.tabs = uiTabsParams;
-
-        // $scope.$on('tabCloseStart', function(e){
-        //     e.preventDefault();
-        // });
-        //
-        // $scope.$on('tabCloseError', function(e, tab){
-        //     console.log('close error ', tab.id);
-        // });
-
-        console.log(uiTabsParams);
-
-        $scope.$on('$destroy', function (e) {
-            console.log('destroy', uiTab.id);
-        })
     });
