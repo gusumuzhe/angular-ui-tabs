@@ -35,7 +35,7 @@ gulp.task('watch', function () {
 gulp.task('pack', ['webpack'], function () {
     return gulp.src('dist/ui-tabs.js')
         .pipe(ngAnnotate())
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(rename({extname: '.min.js'}))
         .pipe(gulp.dest('dist'));
 });

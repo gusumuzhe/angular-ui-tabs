@@ -1779,7 +1779,6 @@ _uiTabs2.default.directive('uiTabsView', function ($timeout, $controller, $compi
                 newScope.$tab = tab;
 
                 link = $compile(tab.locals['$template']);
-                pageNode = tab.$node = link(newScope);
 
                 if (tab.controller) {
                     // 实例controller，并且传入uiTabsParams 和 uiTab 参数
@@ -1790,12 +1789,16 @@ _uiTabs2.default.directive('uiTabsView', function ($timeout, $controller, $compi
                     }, tab.locals));
                 }
 
-                $timeout(function () {
-                    container = angular.element(element[0].querySelector('#ui-tabs-' + tab.id));
-                    container.append(pageNode);
+                pageNode = tab.$node = link(newScope);
 
-                    broadcastTabActivated(tab, preTab);
-                });
+                // $timeout(function () {
+
+
+                container = angular.element(element[0].querySelector('#ui-tabs-' + tab.id));
+                container.append(pageNode);
+
+                broadcastTabActivated(tab, preTab);
+                // });
             }
 
             /**
