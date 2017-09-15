@@ -1,6 +1,9 @@
 # angular ui-tabs
 实现类似于浏览器的tab页功能
 
+## Demo
+Click [here](http://plnkr.co/edit/6nctNU?p=preview)
+
 ## 安装
 引入库文件
 
