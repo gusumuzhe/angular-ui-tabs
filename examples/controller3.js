@@ -3,7 +3,7 @@
  */
 angular.module('app')
     .controller('DemoController3', function ($scope, uiTab, uiTabsParams) {
-        $scope.tabs = uiTabsParams;
+        $scope.tab = uiTabsParams;
 
         // $scope.$on('tabCloseStart', function(e){
         //     e.preventDefault();

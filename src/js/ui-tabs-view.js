@@ -7,7 +7,7 @@ import '../scss/ui-tabs.scss';
 import './ui-tabs-menu';
 // import './ui-tabs-drag';
 
-uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, uiTabs) {
+uiTabsModule.directive('uiTabsView', function ($rootScope, $timeout, $controller, $compile, uiTabs) {
     return {
         restrict: 'EAC',
         priority: 400,
@@ -124,7 +124,7 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
 
                 tab.loading = false; // 取消加载动画
 
-                newScope = tab.$scope = element.parent().scope().$new();
+                newScope = tab.$scope = $rootScope.$new();
                 newScope.$tab = tab;
 
                 link = $compile(tab.locals['$template']);
@@ -140,15 +140,15 @@ uiTabsModule.directive('uiTabsView', function ($timeout, $controller, $compile, 
 
                 pageNode = tab.$node = link(newScope);
 
+                // 等待tab容器生成
+                $timeout(function () {
+                    if (!newScope.$$destroyed) {
+                        container = angular.element(element[0].querySelector('#ui-tabs-' + tab.id));
+                        container.append(pageNode);
 
-                // $timeout(function () {
-
-
-                container = angular.element(element[0].querySelector('#ui-tabs-' + tab.id));
-                container.append(pageNode);
-
-                broadcastTabActivated(tab, preTab);
-                // });
+                        broadcastTabActivated(tab, preTab);
+                    }
+                });
             }
 
             /**

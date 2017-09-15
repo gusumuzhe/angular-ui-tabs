@@ -1658,7 +1658,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * Created by zhang on 2017/6/7.
  */
-_uiTabs2.default.directive('uiTabsView', function ($timeout, $controller, $compile, uiTabs) {
+_uiTabs2.default.directive('uiTabsView', function ($rootScope, $timeout, $controller, $compile, uiTabs) {
     return {
         restrict: 'EAC',
         priority: 400,
@@ -1775,7 +1775,7 @@ _uiTabs2.default.directive('uiTabsView', function ($timeout, $controller, $compi
 
                 tab.loading = false; // 取消加载动画
 
-                newScope = tab.$scope = element.parent().scope().$new();
+                newScope = tab.$scope = $rootScope.$new();
                 newScope.$tab = tab;
 
                 link = $compile(tab.locals['$template']);
@@ -1791,14 +1791,15 @@ _uiTabs2.default.directive('uiTabsView', function ($timeout, $controller, $compi
 
                 pageNode = tab.$node = link(newScope);
 
-                // $timeout(function () {
+                // 等待tab容器生成
+                $timeout(function () {
+                    if (!newScope.$$destroyed) {
+                        container = angular.element(element[0].querySelector('#ui-tabs-' + tab.id));
+                        container.append(pageNode);
 
-
-                container = angular.element(element[0].querySelector('#ui-tabs-' + tab.id));
-                container.append(pageNode);
-
-                broadcastTabActivated(tab, preTab);
-                // });
+                        broadcastTabActivated(tab, preTab);
+                    }
+                });
             }
 
             /**

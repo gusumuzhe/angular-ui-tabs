@@ -24,6 +24,7 @@ var app = angular.module('app', ['ui.tabs', 'oc.lazyLoad'])
                 title: 'tab1',
                 controller: 'DemoController1',
                 templateUrl: 'demo.html',
+                reopen: true,
                 resolve: {
                     deps: ['$ocLazyLoad',
                         function ($ocLazyLoad) {
