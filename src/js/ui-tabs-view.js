@@ -201,8 +201,11 @@ uiTabsModule.directive('uiTabsView', function ($rootScope, $timeout, $controller
              * @param tab
              */
             function tabCloseSuccess(e, tab) {
-                tab.$scope.$destroy();
-                tab.$node.remove();
+                // 对于加载完毕的tab，则清除$scope, $node
+                if (!tab.loading) {
+                    tab.$scope.$destroy();
+                    tab.$node.remove();
+                }
             }
 
             /**
