@@ -246,23 +246,21 @@ var uiTabsModule = angular.module('ui.tabs', ['angular-sortable-view'])
                 var index = tabs.indexOf(tab),
                     isCurrentTab = tab === uiTabs.current,
                     isCloseSuccess = false,
-                    nextTab;
+                    nextTab = getNextTab();
 
                 if (index >= 0) {
                     // 触发事件，如果被阻止了，则跳转到关闭的tab页，以显示必要的阻止关闭原因
                     if (!$rootScope.$broadcast('tabCloseStart', tab).defaultPrevented || isForce) {
-                        // 如果关闭的tab为当前页，则需要激活下一个tab
-                        if (isCurrentTab) {
-                            nextTab = getNextTab();
-
-                            activeTab(nextTab);
-                        }
-
                         tabs.splice(index, 1);
 
                         $rootScope.$broadcast('tabCloseSuccess', tab);
 
                         isCloseSuccess = true;
+
+                        // 如果关闭的tab为当前页，则需要激活下一个tab
+                        if (isCurrentTab) {
+                            activeTab(nextTab);
+                        }
                     } else {
                         isCurrentTab || activeTab(tab);
 

@@ -93,6 +93,10 @@ var app = angular.module('app', ['ui.tabs', 'oc.lazyLoad'])
         $scope.closeAll = function () {
             uiTabs.closeAll();
             uiTabs.open('tab3');
+        };
+
+        $scope.close = function (id) {
+            uiTabs.close(id);
         }
 
     });
